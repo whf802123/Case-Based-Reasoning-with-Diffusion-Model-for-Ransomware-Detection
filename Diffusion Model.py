@@ -11,11 +11,11 @@ IMAGE_SIZE = 16
 CHANNELS = 3
 T = 1000                                # Time step 
 BATCH_SIZE = 32
-NUM_EPOCHS = 50
+NUM_EPOCHS = 70
 LEARNING_RATE = 5e-5
 WEIGHT_DECAY = 1e-5
 DATA_DIR = "D://Data/Benign_images_16/"  # D://Data/Malware_images_16/   D://Data/Benign_images_16/          D:\Data\isot_Malware_images  D:\Data\isot_Benign_images
-OUTPUT_FOLDER = "USTC_Benign_images_synthetic_3"
+OUTPUT_FOLDER = "USTC_Benign_images_synthetic"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 betas = torch.linspace(1e-4, 0.01, T, device=DEVICE)
@@ -219,7 +219,7 @@ if __name__ == "__main__":
     dataloader = DataLoader(subset, batch_size=BATCH_SIZE, shuffle=True)
     model = DiffusionModelWithComplexUNet(image_size=IMAGE_SIZE, in_channels=CHANNELS, out_channels=CHANNELS, base_channels=64).to(DEVICE)
     optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=NUM_EPOCHS, eta_min=1e-6)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=NUM_EPOCHS, eta_min=3e-6)
     train_diffusion(model, dataloader, optimizer, scheduler=scheduler, num_epochs=NUM_EPOCHS)
     total_samples = 10000              # number of samples
     generate_and_save_images(model=model, total_samples=total_samples, output_folder=OUTPUT_FOLDER, sample_batch_size=2)
